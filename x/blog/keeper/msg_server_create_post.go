@@ -12,7 +12,6 @@ import (
 func (k msgServer) CreatePost(goCtx context.Context, msg *types.MsgCreatePost) (*types.MsgCreatePostResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// TODO: Handling the message
 	postCount, found := k.Keeper.GetPostCount(ctx)
 	if !found {
 		panic("postCount is not found")
@@ -23,6 +22,11 @@ func (k msgServer) CreatePost(goCtx context.Context, msg *types.MsgCreatePost) (
 		Index: newIndex,
 		Title: msg.Title,
 		Body:  msg.Body,
+	}
+
+	err := storedPost.Validate()
+	if err != nil {
+		return nil, err
 	}
 
 	k.Keeper.SetStoredPost(ctx, storedPost)

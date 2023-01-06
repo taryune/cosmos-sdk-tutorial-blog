@@ -29,3 +29,23 @@ func TestCreatePostSuccess(t *testing.T) {
 		PostIndex: "0",
 	}, *createResponse)
 }
+
+func TestCreatePostBadTitle(t *testing.T) {
+	msgServer, _, context := setupMsgServerCreatePost(t)
+	createResponse, err := msgServer.CreatePost(context, &types.MsgCreatePost{
+		Title: "",
+		Body:  "This is a test",
+	})
+	require.Nil(t, createResponse)
+	require.EqualError(t, err, "index = 0: title is missing")
+}
+
+func TestCreatePostBadBody(t *testing.T) {
+	msgServer, _, context := setupMsgServerCreatePost(t)
+	createResponse, err := msgServer.CreatePost(context, &types.MsgCreatePost{
+		Title: "Test",
+		Body:  "",
+	})
+	require.Nil(t, createResponse)
+	require.EqualError(t, err, "index = 0: body is missing")
+}
