@@ -33,6 +33,15 @@ func (k msgServer) CreatePost(goCtx context.Context, msg *types.MsgCreatePost) (
 	postCount.Count++
 	k.Keeper.SetPostCount(ctx, postCount)
 
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(types.PostCreatedEventType,
+			sdk.NewAttribute(types.PostCreatedCreator, msg.Creator),
+			sdk.NewAttribute(types.PostCreatedPostIndex, newIndex),
+			sdk.NewAttribute(types.PostCreatedTitle, msg.Title),
+			sdk.NewAttribute(types.PostCreatedBody, msg.Body),
+		),
+	)
+
 	return &types.MsgCreatePostResponse{
 		PostIndex: newIndex,
 	}, nil

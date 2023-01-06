@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"blog/testutil"
 	keepertest "blog/testutil/keeper"
 	"blog/x/blog"
 	"blog/x/blog/keeper"
@@ -48,4 +49,29 @@ func TestCreatePostBadBody(t *testing.T) {
 	})
 	require.Nil(t, createResponse)
 	require.EqualError(t, err, "index = 0: body is missing")
+}
+
+func TestCreatePostEmitted(t *testing.T) {
+	msgServer, _, context := setupMsgServerCreatePost(t)
+	_, err := msgServer.CreatePost(context, &types.MsgCreatePost{
+		Creator: testutil.Alice,
+		Title:   "Test",
+		Body:    "This is a test",
+	})
+	require.Nil(t, err)
+
+	ctx := sdk.UnwrapSDKContext(context)
+	require.NotNil(t, ctx)
+	events := sdk.StringifyEvents(ctx.EventManager().ABCIEvents())
+	require.Len(t, events, 1)
+	event := events[0]
+	require.EqualValues(t, sdk.StringEvent{
+		Type: "new-post-created",
+		Attributes: []sdk.Attribute{
+			{Key: "creator", Value: testutil.Alice},
+			{Key: "post-index", Value: "0"},
+			{Key: "title", Value: "Test"},
+			{Key: "body", Value: "This is a test"},
+		},
+	}, event)
 }
