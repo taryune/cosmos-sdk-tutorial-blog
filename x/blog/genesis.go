@@ -3,15 +3,13 @@ package blog
 import (
 	"blog/x/blog/keeper"
 	"blog/x/blog/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // InitGenesis initializes the module's state from a provided genesis state.
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
-	// Set if defined
-	if genState.PostCount != nil {
-		k.SetPostCount(ctx, *genState.PostCount)
-	}
+	k.SetPostCount(ctx, genState.PostCount)
 	// Set all the storedPost
 	for _, elem := range genState.StoredPostList {
 		k.SetStoredPost(ctx, elem)
@@ -28,7 +26,7 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	// Get all postCount
 	postCount, found := k.GetPostCount(ctx)
 	if found {
-		genesis.PostCount = &postCount
+		genesis.PostCount = postCount
 	}
 	genesis.StoredPostList = k.GetAllStoredPost(ctx)
 	// this line is used by starport scaffolding # genesis/module/export

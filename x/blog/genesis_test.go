@@ -7,6 +7,7 @@ import (
 	"blog/testutil/nullify"
 	"blog/x/blog"
 	"blog/x/blog/types"
+
 	"github.com/stretchr/testify/require"
 )
 
@@ -14,7 +15,7 @@ func TestGenesis(t *testing.T) {
 	genesisState := types.GenesisState{
 		Params: types.DefaultParams(),
 
-		PostCount: &types.PostCount{
+		PostCount: types.PostCount{
 			Count: 39,
 		},
 		StoredPostList: []types.StoredPost{

@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"blog/x/blog/types"
+
 	"github.com/stretchr/testify/require"
 )
 
@@ -22,7 +23,7 @@ func TestGenesisState_Validate(t *testing.T) {
 			desc: "valid genesis state",
 			genState: &types.GenesisState{
 
-				PostCount: &types.PostCount{
+				PostCount: types.PostCount{
 					Count: 23,
 				},
 				StoredPostList: []types.StoredPost{
